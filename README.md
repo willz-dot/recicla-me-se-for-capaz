@@ -86,21 +86,25 @@ Para repetir as auditorias externas, consulte `ROTEIRO-DEMONSTRACAO.md`. Não ma
 
 ## Publicação estática pelo GitHub Pages
 
-O diretório entregue não tinha remoto GitHub configurado. A publicação não foi realizada e não foi usado um repositório de outro projeto. Com um repositório próprio criado e acesso autorizado:
+O histórico local foi integrado ao repositório [willz-dot/recicla-me-se-for-capaz](https://github.com/willz-dot/recicla-me-se-for-capaz) e a branch `main` foi enviada. A ativação do GitHub Pages ainda não foi confirmada; a tentativa de consultar/configurar a opção pela API não obteve autenticação TLS nesta sessão.
 
-1. Crie no GitHub um repositório vazio para o projeto (por exemplo `recicla-me-se-for-capaz`); não selecione README, licença nem `.gitignore` se for enviar o histórico local já preparado.
-2. Na raiz local, associe o endereço do repositório e envie a branch `main`:
+Para disponibilizar o site:
 
-   ```powershell
-   git remote add origin https://github.com/SEU-USUARIO/recicla-me-se-for-capaz.git
-   git push -u origin main
-   ```
+1. Abra o repositório acima no GitHub e vá a **Settings > Pages**.
+2. Em **Build and deployment**, escolha **Deploy from a branch**; selecione a branch `main`, a pasta `/(root)` e salve.
+3. Aguarde o GitHub Pages publicar e use a URL mostrada na mesma página. Para este nome de repositório, o endereço esperado é `https://willz-dot.github.io/recicla-me-se-for-capaz/`; confirme no GitHub antes de compartilhar como ativo.
+4. Abra a URL fornecida pelo GitHub e verifique início, navegação entre as cinco páginas, CSS, JavaScript e formulário demonstrativo.
+5. Execute WAVE, axe e Lighthouse na URL publicada e registre os relatórios e notas reais em `REQUISITOS.md`.
 
-3. No repositório GitHub, abra **Settings > Pages**. Em **Build and deployment**, selecione **Deploy from a branch**, escolha `main` e a pasta `/(root)`, então salve.
-4. Aguarde o workflow do Pages terminar e abra a URL exibida em **Settings > Pages**. Confirme a página inicial e cada link de navegação. Em um projeto de site de usuário/organização a URL costuma usar o domínio raiz; em um projeto comum, o caminho inclui o nome do repositório — use sempre o endereço efetivamente fornecido pelo GitHub.
-5. Execute novamente WAVE, axe e Lighthouse na URL publicada e registre os resultados em `REQUISITOS.md`.
+Para enviar alterações futuras, a partir da raiz:
 
-O projeto usa links relativos entre páginas e para `css/` e `js/`, adequados a publicação no diretório raiz ou em subdiretório de projeto. Não há fluxo de CI/build configurado; GitHub Pages publica os arquivos estáticos diretamente.
+```powershell
+git add .
+git commit -m "Descreva as alterações"
+git push
+```
+
+O projeto usa links relativos entre páginas e para `css/` e `js/`, adequados a publicação em subdiretório de projeto. Não há fluxo de CI/build configurado; com origem `main` e pasta `/(root)`, o Pages pode publicar os arquivos estáticos diretamente.
 
 ## Documentação de entrega
 

@@ -52,9 +52,9 @@ Estados: **pendente** (ainda não implementado ou verificado), **implementado** 
 ## Entrega e apresentação
 
 - [x] **Implementado** — README com tecnologias, funcionalidades, estrutura, execução, limitações e passos de publicação.
-- [x] **Testado** — repositório Git local inicializado com branch `main`, `.gitignore` e commit inicial; nenhum remoto de publicação foi configurado. Não usar repositório de outro projeto.
+- [x] **Testado** — repositório Git local com branch `main`, `.gitignore` e histórico integrado ao remoto `https://github.com/willz-dot/recicla-me-se-for-capaz.git`; push da branch `main` concluído.
 - [ ] **Pendente** — executar e registrar WAVE, axe DevTools e Lighthouse; repetir após correções. Nu HTML Checker foi executado e passou.
-- [ ] **Pendente** — publicar em hospedagem acessível e verificar o endereço/link público.
+- [ ] **Pendente** — ativar/verificar GitHub Pages em Settings > Pages e confirmar a URL pública. O código já está no GitHub; a tentativa de conferir a configuração Pages pela API falhou por autenticação TLS.
 - [x] **Implementado** — `ROTEIRO-DEMONSTRACAO.md` documenta páginas, responsividade, teclado, skip link, foco, formulário, auditorias e estado medido/pendente.
 - [ ] **Pendente** — confirmar no Teams o ano e o prazo exato informado como 21/10 às 22h.
 
