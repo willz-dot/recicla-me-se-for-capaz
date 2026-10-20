@@ -54,7 +54,7 @@ Estados: **pendente** (ainda não implementado ou verificado), **implementado** 
 - [x] **Implementado** — README com tecnologias, funcionalidades, estrutura, execução, limitações e passos de publicação.
 - [x] **Testado** — repositório Git local com branch `main`, `.gitignore` e histórico integrado ao remoto `https://github.com/willz-dot/recicla-me-se-for-capaz.git`; push da branch `main` concluído.
 - [ ] **Pendente** — executar e registrar WAVE, axe DevTools e Lighthouse; repetir após correções. Nu HTML Checker foi executado e passou.
-- [ ] **Pendente** — ativar/verificar GitHub Pages em Settings > Pages e confirmar a URL pública. O código já está no GitHub; a tentativa de conferir a configuração Pages pela API falhou por autenticação TLS.
+- [x] **Testado** — GitHub Pages configurado para branch `main`, raiz `/(root)`; API reportou `built`. A URL pública `https://willz-dot.github.io/recicla-me-se-for-capaz/` e as cinco páginas, CSS e scripts responderam HTTP 200.
 - [x] **Implementado** — `ROTEIRO-DEMONSTRACAO.md` documenta páginas, responsividade, teclado, skip link, foco, formulário, auditorias e estado medido/pendente.
 - [ ] **Pendente** — confirmar no Teams o ano e o prazo exato informado como 21/10 às 22h.
 
@@ -66,6 +66,7 @@ Estados: **pendente** (ainda não implementado ou verificado), **implementado** 
 - [x] **Testado** — testes de formulário usam DOM simulado; CPF/telefone/CEP/e-mail têm casos aceitos e rejeitados; nenhum dado real é usado ou persistido.
 - [x] **Testado** — navegador local: Enter abre o menu, Escape fecha e devolve o foco; envio vazio foca o primeiro campo e anuncia erros; corrigir o nome remove seu erro e atualiza a contagem; console sem erros.
 - [x] **Testado** — Nu HTML Checker oficial: todas as cinco páginas sem erros ou avisos.
+- [x] **Testado** — publicação estática: home, cinco páginas HTML, folha CSS e dois scripts retornaram HTTP 200 na URL do GitHub Pages publicada.
 - [ ] **Pendente** — WAVE e axe DevTools: não há integração/extensão de auditoria exposta nesta sessão; as tentativas não produziram relatórios verificáveis. Lighthouse CLI 12.8.2 foi instalado temporariamente em `work/`, mas falhou ao aguardar a porta de depuração do Chrome headless. Nenhuma aprovação dessas ferramentas é declarada.
 - [x] **Testado** — `node --test tests/components.test.cjs` tentou iniciar subprocesso e foi bloqueado (`spawn EPERM`); execução direta `node tests/components.test.cjs` passou os 7 testes.
 

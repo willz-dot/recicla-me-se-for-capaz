@@ -86,15 +86,15 @@ Para repetir as auditorias externas, consulte `ROTEIRO-DEMONSTRACAO.md`. Não ma
 
 ## Publicação estática pelo GitHub Pages
 
-O histórico local foi integrado ao repositório [willz-dot/recicla-me-se-for-capaz](https://github.com/willz-dot/recicla-me-se-for-capaz) e a branch `main` foi enviada. A ativação do GitHub Pages ainda não foi confirmada; a tentativa de consultar/configurar a opção pela API não obteve autenticação TLS nesta sessão.
+O histórico local foi integrado ao repositório [willz-dot/recicla-me-se-for-capaz](https://github.com/willz-dot/recicla-me-se-for-capaz), e a branch `main` foi enviada. O GitHub Pages está configurado para publicar a raiz (`/`) da branch `main`; a publicação retornou `built` e a URL pública respondeu HTTP 200.
+
+**Site publicado:** [https://willz-dot.github.io/recicla-me-se-for-capaz/](https://willz-dot.github.io/recicla-me-se-for-capaz/)
 
 Para disponibilizar o site:
 
-1. Abra o repositório acima no GitHub e vá a **Settings > Pages**.
-2. Em **Build and deployment**, escolha **Deploy from a branch**; selecione a branch `main`, a pasta `/(root)` e salve.
-3. Aguarde o GitHub Pages publicar e use a URL mostrada na mesma página. Para este nome de repositório, o endereço esperado é `https://willz-dot.github.io/recicla-me-se-for-capaz/`; confirme no GitHub antes de compartilhar como ativo.
-4. Abra a URL fornecida pelo GitHub e verifique início, navegação entre as cinco páginas, CSS, JavaScript e formulário demonstrativo.
-5. Execute WAVE, axe e Lighthouse na URL publicada e registre os relatórios e notas reais em `REQUISITOS.md`.
+1. Para revisar a configuração, abra o repositório acima no GitHub e vá a **Settings > Pages**. A origem registrada é `main` + `/(root)`.
+2. A URL publicada e confirmada é `https://willz-dot.github.io/recicla-me-se-for-capaz/`.
+3. Execute WAVE, axe e Lighthouse nessa URL e registre os relatórios e notas reais em `REQUISITOS.md`.
 
 Para enviar alterações futuras, a partir da raiz:
 
