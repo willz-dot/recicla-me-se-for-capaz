@@ -74,9 +74,9 @@ h3 { color: var(--graphite); font-size: 1.18rem; }
 .local-note span { padding-right: 5px; color: var(--forest); }
 .hero-art { position: relative; display: grid; min-height: 390px; place-items: center; overflow: hidden; border-radius: 44% 42% 35% 38% / 36% 38% 45% 46%; background: #e7efe2; }
 .sun-shape { position: absolute; top: 12%; right: 17%; width: 116px; aspect-ratio: 1; border-radius: 50%; background: #f5d6a9; }
-.recycle-loop { position: absolute; top: 13%; left: 18%; color: #98b798; font-size: 5rem; transform: rotate(-20deg); }
-.art-leaf { position: absolute; color: var(--green); font-size: 1.3rem; }
-.leaf-one { top: 27%; right: 14%; }.leaf-two { bottom: 18%; left: 17%; color: var(--orange); }
+.recycle-loop { position: absolute; top: 13%; left: 18%; color: #4c7052; font-size: 5rem; transform: rotate(-20deg); }
+.art-leaf { position: absolute; color: var(--green-text); font-size: 1.3rem; }
+.leaf-one { top: 27%; right: 14%; }.leaf-two { bottom: 18%; left: 17%; color: #945311; }
 .bag { position: absolute; bottom: 16%; display: flex; width: 140px; height: 182px; flex-direction: column; align-items: center; justify-content: center; border-radius: 28px 28px 38px 38px; box-shadow: 0 20px 30px rgb(23 77 56 / 16%); transform: rotate(-5deg); }
 .bag::before { position: absolute; top: -13px; width: 63px; height: 21px; border: 7px solid currentColor; border-bottom: 0; border-radius: 18px 18px 0 0; content: ""; }
 .bag-organic { left: 22%; background: var(--forest); color: var(--forest); }

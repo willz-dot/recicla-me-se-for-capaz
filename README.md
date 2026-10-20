@@ -71,7 +71,7 @@ Estado medido nesta entrega, detalhado em `REQUISITOS.md`:
 - Testes automatizados JavaScript: 7 passaram.
 - Verificação em navegador: cinco páginas em 320, 390, 768 e 1366 px, sem overflow horizontal; teste de teclado do skip link, menu e formulário.
 - Contraste de texto calculado localmente: 217 nós visíveis, sem relações abaixo de 4,5:1/3:1 após ajustes. Contraste não textual ainda requer avaliação manual.
-- WAVE e axe DevTools: sem relatório verificável disponível nesta sessão.
+- WAVE: capturas das cinco páginas foram recebidas. Todas mostram zero erros gerais; a página inicial mostrou três erros de contraste, corrigidos depois das capturas, aguardando repetição do WAVE. Os alertas de links redundantes precisam de revisão manual. axe DevTools: ainda sem relatório verificável.
 - Lighthouse CLI 12.8.2: a execução falhou ao iniciar Chrome headless/porta de depuração; notas de Accessibility e Performance não foram obtidas. Portanto as metas de 90 e 80 não estão comprovadas.
 - Leitor de tela, zoom e verificação manual de todos os focos ainda precisam de execução.
 
