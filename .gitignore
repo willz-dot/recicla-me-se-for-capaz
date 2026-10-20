@@ -1,0 +1,12 @@
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dependências, artefatos temporários e relatórios locais
+node_modules/
+work/
+coverage/
+*.log
+lighthouse-*.json
