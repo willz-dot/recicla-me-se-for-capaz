@@ -3,6 +3,53 @@
 
   const onlyDigits = (value) => String(value ?? "").replace(/\D/g, "");
 
+  function formatCpf(value) {
+    const digits = onlyDigits(value).slice(0, 11);
+    let formatted = digits.slice(0, 3);
+    if (digits.length > 3) formatted += `.${digits.slice(3, 6)}`;
+    if (digits.length > 6) formatted += `.${digits.slice(6, 9)}`;
+    if (digits.length > 9) formatted += `-${digits.slice(9, 11)}`;
+    return formatted;
+  }
+
+  function caretPositionForDigitCount(formatted, digitCount) {
+    if (digitCount <= 0) return 0;
+    let seen = 0;
+    for (let index = 0; index < formatted.length; index += 1) {
+      if (/\d/.test(formatted[index])) {
+        seen += 1;
+        if (seen === digitCount) return index + 1;
+      }
+    }
+    return formatted.length;
+  }
+
+  function attachCpfMask(input) {
+    if (!input) return;
+
+    input.addEventListener("keydown", (event) => {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) return;
+      if (!/^\d$/.test(event.key)) event.preventDefault();
+    });
+
+    input.addEventListener("beforeinput", (event) => {
+      if (!event.inputType?.startsWith("insert") || event.inputType === "insertFromPaste") return;
+      if (event.data && /\D/.test(event.data)) event.preventDefault();
+    });
+
+    input.addEventListener("input", () => {
+      const currentValue = input.value;
+      const caret = input.selectionStart ?? currentValue.length;
+      const digitsBeforeCaret = onlyDigits(currentValue.slice(0, caret)).length;
+      const formatted = formatCpf(currentValue);
+      if (currentValue === formatted) return;
+
+      input.value = formatted;
+      const nextCaret = caretPositionForDigitCount(formatted, Math.min(digitsBeforeCaret, 11));
+      input.setSelectionRange?.(nextCaret, nextCaret);
+    });
+  }
+
   function isValidCpf(value) {
     const cpf = onlyDigits(value);
     if (cpf.length !== 11 || /^([0-9])\1{10}$/.test(cpf)) return false;
@@ -35,15 +82,13 @@
   }
 
   function neighborhoodListIsConfigured(field) {
-    return [...field.options].some((option) => option.value.trim() !== "" && !option.disabled);
+    return [...field.options].some((option) => option.value.trim() !== "" && option.value !== "outro" && !option.disabled);
   }
 
   function errorFor(field) {
     const value = field.value.trim();
 
-    if (field.id === "bairro" && !neighborhoodListIsConfigured(field)) {
-      return "A lista oficial de bairros ainda não foi configurada; não é possível concluir o cadastro.";
-    }
+    if (field.id === "bairro" && !neighborhoodListIsConfigured(field)) return "A lista de bairros ainda não foi configurada.";
     if (field.required && value === "") return "Preencha este campo obrigatório.";
     if (value === "") return "";
 
@@ -61,16 +106,22 @@
   }
 
   // Exposes only pure validators for automated checks; no personal data is read or stored here.
-  globalThis.ReciclaFormValidation = { onlyDigits, isValidCpf, isValidPhone, isValidCep, isValidEmail };
+  globalThis.ReciclaFormValidation = { onlyDigits, formatCpf, attachCpfMask, isValidCpf, isValidPhone, isValidCep, isValidEmail };
 
   const form = document.querySelector("#registration-form");
   if (!form) return;
 
-  const requiredFields = [...form.querySelectorAll("input[required], select[required]")];
+  const fields = [...form.querySelectorAll("input, select")];
+  const requiredFields = () => fields.filter((field) => field.required && !field.disabled);
   const feedback = form.querySelector("#form-feedback");
   const feedbackText = feedback?.querySelector(".form-status-text");
   const submitButton = form.querySelector('button[type="submit"]');
+  const neighborhoodSelect = form.querySelector("#bairro");
+  const customNeighborhood = form.querySelector("#bairro-outro");
+  const customNeighborhoodContainer = form.querySelector("#bairro-outro-container");
   let submitAttempted = false;
+
+  attachCpfMask(form.querySelector("#cpf"));
 
   if (!submitButton) return;
 
@@ -111,11 +162,36 @@
     return message;
   }
 
+  function updateFeedbackFromCurrentErrors() {
+    const invalidFields = requiredFields().filter((field) => updateFieldError(field));
+    if (invalidFields.length) {
+      setFeedback(`Há ${invalidFields.length} campo${invalidFields.length === 1 ? "" : "s"} para revisar. Consulte as mensagens junto aos campos. Nenhum dado foi enviado ou salvo.`, "error");
+    } else {
+      setFeedback("Os campos parecem válidos. Esta demonstração não envia nem salva o cadastro.", "success");
+    }
+  }
+
+  function syncCustomNeighborhood() {
+    if (!neighborhoodSelect || !customNeighborhood || !customNeighborhoodContainer) return;
+    const isOther = neighborhoodSelect.value === "outro";
+    customNeighborhoodContainer.hidden = !isOther;
+    customNeighborhood.disabled = !isOther;
+    customNeighborhood.required = isOther;
+    if (!isOther) {
+      customNeighborhood.value = "";
+      updateFieldError(customNeighborhood);
+    }
+    if (submitAttempted) updateFeedbackFromCurrentErrors();
+  }
+
+  syncCustomNeighborhood();
+  neighborhoodSelect?.addEventListener("change", syncCustomNeighborhood);
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     submitAttempted = true;
 
-    const invalidFields = requiredFields.filter((field) => updateFieldError(field));
+    const invalidFields = requiredFields().filter((field) => updateFieldError(field));
     if (invalidFields.length) {
       setFeedback(`Há ${invalidFields.length} campo${invalidFields.length === 1 ? "" : "s"} para revisar. Consulte as mensagens junto aos campos. Nenhum dado foi enviado ou salvo.`, "error");
       invalidFields[0].focus();
@@ -128,16 +204,11 @@
   // Prevent the browser's default GET submission if the validation script is unavailable.
   submitButton.disabled = false;
 
-  requiredFields.forEach((field) => {
+  fields.forEach((field) => {
     field.addEventListener("blur", () => {
       if (!submitAttempted) return;
-      updateFieldError(field);
-      const remainingErrors = requiredFields.filter((item) => errorFor(item)).length;
-      if (remainingErrors) {
-        setFeedback(`Há ${remainingErrors} campo${remainingErrors === 1 ? "" : "s"} para revisar. Consulte as mensagens junto aos campos. Nenhum dado foi enviado ou salvo.`, "error");
-      } else {
-        setFeedback("Os campos parecem válidos. Esta demonstração não envia nem salva o cadastro.", "success");
-      }
+      if (field.id === "bairro-outro") field.value = field.value.trim();
+      updateFeedbackFromCurrentErrors();
     });
   });
 })();

@@ -69,12 +69,14 @@ class FakeElement extends FakeEventTarget {
     super();
     this.id = id; this.value = value; this.required = required; this.type = type;
     this.options = options; this.attrs = {}; this.children = []; this.focusCalls = 0;
+    this.disabled = false; this.selectionStart = 0; this.selectionEnd = 0;
     this.validity = { typeMismatch: false };
   }
   getAttribute(name) { return this.attrs[name] ?? null; }
   setAttribute(name, value) { this.attrs[name] = String(value); }
   removeAttribute(name) { delete this.attrs[name]; }
   focus() { this.focusCalls += 1; }
+  setSelectionRange(start, end) { this.selectionStart = start; this.selectionEnd = end; }
   closest(selector) { return selector === ".field" ? this.container : null; }
 }
 
@@ -86,27 +88,32 @@ class FakeContainer {
 }
 
 function makeForm({ configuredNeighborhood = false, validValues = false } = {}) {
-  const ids = ["nome", "cpf", "nascimento", "email", "telefone", "rua", "numero", "bairro", "cep"];
+  const ids = ["nome", "cpf", "nascimento", "email", "telefone", "rua", "numero", "bairro", "bairro-outro", "cep"];
   const fields = ids.map((id) => {
     const type = id === "email" ? "email" : id === "nascimento" ? "date" : id === "bairro" ? "select-one" : "text";
-    const value = validValues ? ({ nome: "Pessoa Teste", cpf: "529.982.247-25", nascimento: "1990-01-01", email: "teste@example.invalid", telefone: "0000000000", rua: "Rua de Teste", numero: "10", bairro: configuredNeighborhood ? "bairro-teste" : "", cep: "00000000" }[id]) : "";
-    const options = configuredNeighborhood && id === "bairro" ? [{ value: "" }, { value: "bairro-teste", disabled: false }] : [{ value: "" }];
-    const field = new FakeElement({ id, value, required: true, type, options });
+    const value = validValues ? ({ nome: "Pessoa Teste", cpf: "529.982.247-25", nascimento: "1990-01-01", email: "teste@example.invalid", telefone: "0000000000", rua: "Rua de Teste", numero: "10", bairro: configuredNeighborhood ? "agua-verde" : "", "bairro-outro": "", cep: "00000000" }[id]) : "";
+    const options = configuredNeighborhood && id === "bairro" ? [{ value: "" }, { value: "agua-verde", disabled: false }, { value: "outro", disabled: false }] : [{ value: "" }];
+    const field = new FakeElement({ id, value, required: id !== "bairro-outro", type, options });
+    if (id === "bairro-outro") { field.disabled = true; field.setAttribute("aria-describedby", "bairro-outro-note"); }
     field.container = new FakeContainer();
     return field;
   });
   const statusText = { textContent: "" };
   const feedback = { attrs: {}, setAttribute(k, v) { this.attrs[k] = v; }, querySelector: () => statusText };
+  const customNeighborhoodContainer = { hidden: true };
   const submitButton = { disabled: true };
   const form = new FakeEventTarget();
   form.querySelectorAll = () => fields;
-  form.querySelector = (selector) => selector === "#form-feedback" ? feedback : selector === 'button[type="submit"]' ? submitButton : null;
+  form.querySelector = (selector) => selector === "#form-feedback" ? feedback
+    : selector === 'button[type="submit"]' ? submitButton
+      : fields.find((field) => `#${field.id}` === selector)
+        || (selector === "#bairro-outro-container" ? customNeighborhoodContainer : null);
   const document = {
     querySelector: () => form,
     createElement: () => ({ className: "", id: "", textContent: "", parent: null, remove() { this.parent?.remove(this); } }),
   };
   runInContext(readScript("form-validation.js"), document);
-  return { form, fields, feedback, statusText, submitButton };
+  return { form, fields, feedback, statusText, submitButton, customNeighborhoodContainer };
 }
 
 test("validação de CPF, telefone, CEP e e-mail distingue formatos aceitos e rejeitados", () => {
@@ -121,6 +128,69 @@ test("validação de CPF, telefone, CEP e e-mail distingue formatos aceitos e re
   assert.equal(validation.isValidCep("8946"), false);
   assert.equal(validation.isValidEmail({ type: "email", value: "teste@example.invalid", validity: { typeMismatch: false } }), true);
   assert.equal(validation.isValidEmail({ type: "email", value: "email-invalido", validity: { typeMismatch: true } }), false);
+});
+
+test("máscara de CPF pontua automaticamente, normaliza colagem e limita a onze dígitos", () => {
+  const { ReciclaFormValidation: validation } = runInContext(readScript("form-validation.js"), { querySelector: () => null });
+  assert.equal(validation.formatCpf("12345678900"), "123.456.789-00");
+  assert.equal(validation.formatCpf("00123456789"), "001.234.567-89");
+  assert.equal(validation.formatCpf("123.456.789-001234"), "123.456.789-00");
+
+  const input = new FakeElement({ id: "cpf", value: "123.456.789-00" });
+  input.selectionStart = input.value.length;
+  validation.attachCpfMask(input);
+  input.value = "001.234.567-89";
+  input.selectionStart = input.value.length;
+  input.dispatch("beforeinput", { inputType: "insertFromPaste", data: "001.234.567-89", preventDefault() { assert.fail("colagem deve ser normalizada"); } });
+  input.dispatch("input");
+  assert.equal(input.value, "001.234.567-89");
+
+  let keyPrevented = false;
+  input.dispatch("keydown", { key: ".", preventDefault() { keyPrevented = true; } });
+  assert.equal(keyPrevented, true);
+  let beforeInputPrevented = false;
+  input.dispatch("beforeinput", { inputType: "insertText", data: "-", preventDefault() { beforeInputPrevented = true; } });
+  assert.equal(beforeInputPrevented, true);
+});
+
+test("máscara preserva cursor em edição intermediária, Backspace e Delete", () => {
+  const { ReciclaFormValidation: validation } = runInContext(readScript("form-validation.js"), { querySelector: () => null });
+  const input = new FakeElement({ id: "cpf" });
+  validation.attachCpfMask(input);
+
+  input.value = "123.9456.789-00";
+  input.selectionStart = 5;
+  input.dispatch("input");
+  assert.equal(input.value, "123.945.678-90");
+  assert.equal(input.selectionStart, 5);
+
+  let backspacePrevented = false;
+  input.dispatch("keydown", { key: "Backspace", preventDefault() { backspacePrevented = true; } });
+  assert.equal(backspacePrevented, false);
+  input.value = "123.45.678-90";
+  input.selectionStart = 4;
+  input.dispatch("input");
+  assert.equal(input.value, "123.456.789-0");
+  assert.equal(input.selectionStart, 3);
+
+  let deletePrevented = false;
+  input.dispatch("keydown", { key: "Delete", preventDefault() { deletePrevented = true; } });
+  assert.equal(deletePrevented, false);
+});
+
+test("lista de bairros contém os 21 nomes fornecidos em grupos e termina com Outro", () => {
+  const html = fs.readFileSync(path.join(project, "acesso.html"), "utf8");
+  const select = html.match(/<select id="bairro"[\s\S]*?<\/select>/)?.[0];
+  assert.ok(select, "seletor de bairro deve existir");
+  const names = [...select.matchAll(/<option\b[^>]*>([^<]*)<\/option>/g)].map((match) => match[1]);
+  assert.equal(names.length, 23); // placeholder, 21 bairros/localidades e Outro
+  assert.equal(names.at(-1), "Outro");
+  assert.ok(select.indexOf('<optgroup label="Bairros urbanos">') < select.indexOf('<optgroup label="Localidades e comunidades rurais">'));
+  assert.deepEqual(names.slice(1, -1), [
+    "Água Verde", "Alto da Tijuca", "Alto das Palmeiras", "Boa Vista", "Campo da Água Verde", "Centro",
+    "Industrial I", "Industrial II", "Jardim Esperança", "Marcílio Dias", "Piedade", "Sossego", "Tricolin",
+    "Arroios", "Alto dos Pinheiros", "Barra Mansa", "Bonetes", "Campo do Trigo", "Campo dos Pontes", "Caraguatá", "Cerrito",
+  ]);
 });
 
 test("formulário marca erros, associa descrições e foca o primeiro campo inválido", () => {
@@ -145,12 +215,44 @@ test("feedback atualiza a quantidade de erros quando um campo é corrigido", () 
   assert.match(statusText.textContent, /8 campos para revisar/);
 });
 
-test("formulário não permite concluir sem lista de bairros configurada", () => {
+test("formulário exige uma opção de bairro", () => {
   const { form, fields, feedback, statusText } = makeForm({ validValues: true, configuredNeighborhood: false });
   form.dispatch("submit", { preventDefault() {} });
   assert.equal(fields.find((field) => field.id === "bairro").attrs["aria-invalid"], "true");
   assert.equal(feedback.attrs["data-state"], "error");
   assert.match(statusText.textContent, /1 campo para revisar/);
+});
+
+test("Outro revela campo obrigatório, valida, oculta e limpa ao escolher bairro da lista", () => {
+  const { form, fields, statusText, customNeighborhoodContainer } = makeForm({ validValues: true, configuredNeighborhood: true });
+  const neighborhood = fields.find((field) => field.id === "bairro");
+  const custom = fields.find((field) => field.id === "bairro-outro");
+  neighborhood.value = "outro";
+  neighborhood.dispatch("change");
+  assert.equal(customNeighborhoodContainer.hidden, false);
+  assert.equal(custom.disabled, false);
+  assert.equal(custom.required, true);
+
+  form.dispatch("submit", { preventDefault() {} });
+  assert.equal(custom.attrs["aria-invalid"], "true");
+  assert.match(custom.attrs["aria-describedby"], /error-bairro-outro/);
+  assert.match(statusText.textContent, /1 campo para revisar/);
+
+  custom.value = "  Comunidade Teste  ";
+  custom.dispatch("blur");
+  assert.equal(custom.value, "Comunidade Teste");
+  assert.equal(custom.attrs["aria-invalid"], undefined);
+  assert.match(statusText.textContent, /Os campos parecem válidos/);
+  assert.match(statusText.textContent, /não envia nem salva/);
+
+  neighborhood.value = "agua-verde";
+  neighborhood.dispatch("change");
+  assert.equal(customNeighborhoodContainer.hidden, true);
+  assert.equal(custom.disabled, true);
+  assert.equal(custom.required, false);
+  assert.equal(custom.value, "");
+  assert.equal(custom.attrs["aria-invalid"], undefined);
+  assert.equal(custom.attrs["aria-describedby"], "bairro-outro-note");
 });
 
 test("formulário comunica sucesso de validação sem alegar envio ou salvamento", () => {

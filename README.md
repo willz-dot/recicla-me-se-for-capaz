@@ -1,13 +1,13 @@
 # Recicla-me se for capaz
 
-Site educativo de sustentabilidade e preparação para coleta seletiva em Canoinhas - SC. O projeto é estático, responsivo e sem dependências de execução no navegador. As informações locais sobre bairros, calendário e horários não são inventadas: dependem de confirmação por fontes oficiais.
+Site educativo de sustentabilidade e preparação para coleta seletiva em Canoinhas - SC. O projeto é estático, responsivo e sem dependências de execução no navegador. Os 21 bairros/localidades listados no cadastro foram informados pelo responsável pelo projeto; calendário e horários dependem de confirmação por fontes oficiais.
 
 ## Páginas
 
 - `index.html` — apresentação e chamadas para ação.
 - `como-funciona.html` — etapas demonstrativas do serviço.
 - `residuos.html` — orientação sobre seis categorias de resíduos e cuidados.
-- `acesso.html` — formulário demonstrativo com validação no cliente.
+- `acesso.html` — formulário demonstrativo com máscara de CPF, lista agrupada de bairros e validação no cliente.
 - `painel.html` — painel demonstrativo, sem dados ou calendário de usuário.
 
 Todas as páginas compartilham navegação, identidade visual, skip link e rodapé. O formulário não envia nem persiste dados; o painel não representa uma conta real.
@@ -17,6 +17,7 @@ Todas as páginas compartilham navegação, identidade visual, skip link e rodap
 - HTML5 semântico e CSS3 (Grid, Flexbox, media queries e preferência por movimento reduzido).
 - JavaScript sem framework: menu móvel nativo `<details>/<summary>` e validação acessível.
 - Node.js, opcional, para executar os testes automatizados. Não há etapa de build nem dependências npm no site.
+- Cadastro de demonstração: CPF aceita somente dígitos e aplica pontuação automaticamente; “Outro” abre um campo de bairro obrigatório apenas nessa opção. O bairro personalizado não é armazenado nem enviado; o sistema não conclui cadastro.
 
 ## Estrutura
 
@@ -67,11 +68,11 @@ O projeto inclui idioma `pt-BR`, landmarks semânticos, hierarquia de títulos, 
 
 Estado medido nesta entrega, detalhado em `REQUISITOS.md`:
 
-- Nu HTML Checker oficial: cinco páginas sem erros ou avisos.
-- Testes automatizados JavaScript: 7 passaram.
-- Verificação em navegador: cinco páginas em 320, 390, 768 e 1366 px, sem overflow horizontal; teste de teclado do skip link, menu e formulário.
+- Nu HTML Checker oficial: a execução anterior desta implementação foi aprovada em cinco páginas. A versão atual de `acesso.html` ainda precisa de nova validação: a tentativa nesta rodada foi bloqueada pela conexão de rede do ambiente.
+- Testes automatizados JavaScript: 11 passaram, incluindo máscara de CPF, edição/cursor, bairros e campo condicional “Outro”.
+- Verificação anterior em navegador: cinco páginas em 320, 390, 768 e 1366 px, sem overflow horizontal; teclado do skip link, menu e formulário. Nesta etapa, a página de acesso foi revisada visualmente em desktop e o campo adicional reutiliza as regras responsivas existentes; falta repetir a inspeção visual em viewport móvel após a mudança.
 - Contraste de texto calculado localmente: 217 nós visíveis, sem relações abaixo de 4,5:1/3:1 após ajustes. Contraste não textual ainda requer avaliação manual.
-- WAVE: capturas das cinco páginas foram recebidas. Todas mostram zero erros gerais; a página inicial mostrou três erros de contraste, corrigidos depois das capturas, aguardando repetição do WAVE. Os alertas de links redundantes precisam de revisão manual. axe DevTools: ainda sem relatório verificável.
+- WAVE: capturas anteriores das cinco páginas mostram zero erros gerais; a página inicial mostrou três erros de contraste, corrigidos depois das capturas, aguardando repetição. Os alertas de links redundantes precisam de revisão manual. axe DevTools: ainda sem relatório verificável.
 - Lighthouse CLI 12.8.2: a execução falhou ao iniciar Chrome headless/porta de depuração; notas de Accessibility e Performance não foram obtidas. Portanto as metas de 90 e 80 não estão comprovadas.
 - Leitor de tela, zoom e verificação manual de todos os focos ainda precisam de execução.
 
@@ -79,9 +80,9 @@ Para repetir as auditorias externas, consulte `ROTEIRO-DEMONSTRACAO.md`. Não ma
 
 ## Limitações e conteúdo dependente de confirmação
 
-- Não há backend, autenticação, envio, armazenamento de dados ou serviço de calendário.
+- Não há backend, autenticação, envio, armazenamento de dados ou serviço de calendário. A digitação de um bairro personalizado é apenas local à página e não persiste.
 - Não inserir dados reais no formulário demonstrativo.
-- Bairros, dias, horários, categorias da coleta local e conteúdo institucional definitivo dependem de confirmação municipal; a lista de bairros permanece sem opções inventadas.
+- A lista de bairros/localidades fornecida para este projeto foi implementada; sua conferência como cadastro municipal oficial, assim como dias, horários, categorias locais de coleta e conteúdo institucional definitivo, depende de confirmação municipal.
 - Não há imagens externas ou bibliotecas/fontes de terceiros necessárias para executar o projeto.
 
 ## Publicação estática pelo GitHub Pages
