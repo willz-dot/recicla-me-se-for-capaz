@@ -8,10 +8,16 @@ const project = path.resolve(__dirname, "..");
 const readScript = (file) => fs.readFileSync(path.join(project, "js", file), "utf8");
 
 function runInContext(source, document) {
-  const context = { document, globalThis: null, console };
+  const storedValues = new Map();
+  const context = {
+    document,
+    globalThis: null,
+    console,
+    window: { localStorage: { getItem: (key) => storedValues.get(key) ?? null, setItem: (key, value) => storedValues.set(key, value) } },
+  };
   context.globalThis = context;
   vm.runInNewContext(source, context);
-  return context;
+  return { ...context, storedValues };
 }
 
 class FakeEventTarget {
@@ -32,7 +38,7 @@ test("menu mobile acompanha o estado nativo, fecha com Escape e devolve foco", (
   let open = false;
   Object.defineProperty(menu, "open", { get: () => open, set(value) { if (open === value) return; open = value; this.dispatch("toggle"); } });
   menu.querySelector = (selector) => selector === "summary" ? trigger : panel;
-  const document = { querySelectorAll: () => [menu] };
+  const document = { querySelectorAll: (selector) => selector === ".mobile-nav" ? [menu] : [], documentElement: { setAttribute() {}, getAttribute: () => "light" } };
 
   runInContext(readScript("main.js"), document);
   assert.equal(trigger.attrs["aria-label"], "Abrir navegação principal");
@@ -56,12 +62,50 @@ test("menu mobile fecha quando um link é ativado", () => {
   menu.open = true;
   menu.querySelector = (selector) => selector === "summary" ? trigger : panel;
   panel.dispatch("click", { target: { closest: (selector) => selector === "a" ? anchor : null } });
-  const document = { querySelectorAll: () => [menu] };
+  const document = { querySelectorAll: (selector) => selector === ".mobile-nav" ? [menu] : [], documentElement: { setAttribute() {}, getAttribute: () => "light" } };
 
   runInContext(readScript("main.js"), document);
   // Dispatch after the listener is installed.
   panel.dispatch("click", { target: { closest: (selector) => selector === "a" ? anchor : null } });
   assert.equal(menu.open, false);
+});
+
+test("alternância de tema escuro e claro atualiza o botão e persiste entre páginas", () => {
+  const attrs = {};
+  const root = {
+    theme: "light",
+    setAttribute(name, value) { attrs[name] = value; if (name === "data-theme") this.theme = value; },
+    getAttribute(name) { return name === "data-theme" ? this.theme : attrs[name] ?? null; },
+  };
+  const button = new FakeEventTarget();
+  button.attrs = {};
+  button.setAttribute = (name, value) => { button.attrs[name] = value; };
+  const document = {
+    documentElement: root,
+    querySelectorAll: (selector) => selector === "[data-theme-toggle]" ? [button] : [],
+  };
+  const { storedValues } = runInContext(readScript("main.js"), document);
+
+  assert.equal(button.textContent, "Modo escuro");
+  button.dispatch("click");
+  assert.equal(root.theme, "dark");
+  assert.equal(button.textContent, "Modo claro");
+  assert.equal(button.attrs["aria-pressed"], "true");
+  assert.equal(storedValues.get("recicla-me-theme"), "dark");
+
+  button.dispatch("click");
+  assert.equal(root.theme, "light");
+  assert.equal(button.textContent, "Modo escuro");
+  assert.equal(button.attrs["aria-pressed"], "false");
+  assert.equal(storedValues.get("recicla-me-theme"), "light");
+});
+
+test("as cinco páginas oferecem o controle de tema e carregam o script compartilhado", () => {
+  for (const page of ["index.html", "como-funciona.html", "residuos.html", "acesso.html", "painel.html"]) {
+    const html = fs.readFileSync(path.join(project, page), "utf8");
+    assert.match(html, /data-theme-toggle/, `${page} deve oferecer o botão de tema`);
+    assert.match(html, /js\/main\.js/, `${page} deve carregar o controle de tema`);
+  }
 });
 
 class FakeElement extends FakeEventTarget {

@@ -49,6 +49,8 @@ h3 { color: var(--graphite); font-size: 1.18rem; }
 .desktop-nav .nav-cta { padding: 10px 18px; border-radius: 999px; background: var(--forest); color: var(--white); }
 .desktop-nav .nav-cta[aria-current="page"] { color: var(--white); }
 .desktop-nav .nav-cta:hover { background: #0e3b29; }
+.theme-toggle { flex: none; min-height: 42px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); color: var(--forest); font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
+.theme-toggle:hover { background: var(--pale-green); }
 .mobile-nav { display: none; position: relative; }
 .mobile-nav summary { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: var(--forest); cursor: pointer; font-weight: 700; list-style: none; }
 .mobile-nav summary::-webkit-details-marker { display: none; }
@@ -168,4 +170,70 @@ fieldset { min-width: 0; margin: 0 0 24px; padding: 0; border: 0; }fieldset lege
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --forest: #a4d8ae;
+  --green: #83c78d;
+  --green-text: #91d49c;
+  --cream: #151b18;
+  --graphite: #e6ede7;
+  --orange: #ffc17d;
+  --muted: #b4c0b7;
+  --line: #39473e;
+  --white: #202923;
+  --pale-green: #2b3b30;
+  --shadow: 0 18px 48px rgb(0 0 0 / 28%);
+}
+
+:root[data-theme="dark"] a:hover { color: #c2ebc9; }
+:root[data-theme="dark"] .site-header { border-bottom-color: #344239; }
+:root[data-theme="dark"] .skip-link,
+:root[data-theme="dark"] .brand-mark,
+:root[data-theme="dark"] .desktop-nav .nav-cta,
+:root[data-theme="dark"] .button-primary,
+:root[data-theme="dark"] .mini-bags div { background: #28563a; color: #f2f7f2; }
+:root[data-theme="dark"] .desktop-nav .nav-cta:hover,
+:root[data-theme="dark"] .button-primary:hover { background: #356b49; color: #fff; }
+:root[data-theme="dark"] .hero-art { background: #26352b; }
+:root[data-theme="dark"] .sun-shape { background: #795c36; }
+:root[data-theme="dark"] .recycle-loop { color: #9bc6a1; }
+:root[data-theme="dark"] .leaf-two { color: #ffc17d; }
+:root[data-theme="dark"] .benefits-section { background: #1b231e; }
+:root[data-theme="dark"] .benefit-card { border-color: var(--line); }
+:root[data-theme="dark"] .icon-orange,
+:root[data-theme="dark"] .step-calendar { background: #493925; color: #ffd39c; }
+:root[data-theme="dark"] .icon-sage,
+:root[data-theme="dark"] .step-bags { background: #303b2c; }
+:root[data-theme="dark"] .button-secondary { border-color: #657368; color: var(--forest); }
+:root[data-theme="dark"] .button-secondary:hover { background: #29362d; }
+:root[data-theme="dark"] .notice-band { border-color: #405748; background: #26372c; }
+:root[data-theme="dark"] .notice-band p { color: #d0ddd2; }
+:root[data-theme="dark"] .notice-icon { border-color: #91b39a; }
+:root[data-theme="dark"] .paper { background: #423b2c; color: #e5d19b; }
+:root[data-theme="dark"] .plastic { background: #263d40; color: #9dd8db; }
+:root[data-theme="dark"] .metal { background: #343b40; color: #c3cdd3; }
+:root[data-theme="dark"] .glass { background: #34402d; color: #b9d992; }
+:root[data-theme="dark"] .special-card { border-color: #66513a; background: #30271e; }
+:root[data-theme="dark"] .waste-card .care-note { border-top-color: #39473e; }
+:root[data-theme="dark"] .bottom-cta,
+:root[data-theme="dark"] .separation-card { background: #26372b; }
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field select { border-color: #536257; }
+:root[data-theme="dark"] .field input[readonly] { background: #303932; color: #d0d9d1; }
+:root[data-theme="dark"] .form-status { background: #29372e; color: #dce9dd; }
+:root[data-theme="dark"] .form-status[data-state="error"] { background: #492b27; color: #ffd7d0; }
+:root[data-theme="dark"] .form-status[data-state="success"] { background: #293d2e; color: #d6f1d9; }
+:root[data-theme="dark"] .status-pill { background: #493925; color: #ffd39c; }
+:root[data-theme="dark"] .empty-state { border-color: #526456; background: #1b231e; }
+:root[data-theme="dark"] .site-footer { background: #102b20; }
+
+@media (max-width: 820px) {
+  .theme-toggle { padding-inline: 9px; font-size: .74rem; }
+  .desktop-nav { gap: 10px; }
+}
+@media (max-width: 640px) {
+  .header-inner { gap: 8px; }
+  .theme-toggle { min-height: 40px; padding: 6px 8px; font-size: .7rem; }
 }
