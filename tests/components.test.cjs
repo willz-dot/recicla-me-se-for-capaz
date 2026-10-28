@@ -121,6 +121,9 @@ test("a página inicial exibe os três vídeos na ordem enviada antes da chamada
   assert.equal((section.match(/<video\b/g) || []).length, 3);
   assert.equal((section.match(/\bcontrols\b/g) || []).length, 3);
   assert.ok(html.indexOf(section) < html.indexOf('<section class="cta-section container">'), "os vídeos devem vir antes da seção final");
+  const css = fs.readFileSync(path.join(project, "css", "style.css"), "utf8");
+  assert.match(css, /\.example-grid\s*\{[^}]*grid-template-columns:\s*repeat\(3,/);
+  assert.match(css, /\.example-video\s*\{[^}]*width:\s*min\(100%,\s*250px\)/, "vídeo vertical deve ter largura limitada para caber nos três cards");
 });
 
 class FakeElement extends FakeEventTarget {

@@ -104,7 +104,7 @@ h3 { color: var(--graphite); font-size: 1.18rem; }
 .examples-section .section-heading { margin-bottom: 24px; }
 .example-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .example-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--white); box-shadow: var(--shadow); }
-.example-video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #101512; object-fit: contain; }
+.example-video { display: block; width: min(100%, 250px); max-height: 445px; margin-inline: auto; background: #101512; object-fit: contain; }
 .example-card-copy { padding: 17px 20px 19px; }
 .example-card-copy .waste-label { margin-bottom: 5px; color: var(--muted); }
 .example-card-copy h3 { margin: 0; color: var(--forest); }
