@@ -100,6 +100,14 @@ h3 { color: var(--graphite); font-size: 1.18rem; }
 .card-icon { display: grid; width: 46px; height: 46px; place-items: center; border-radius: 15px; font-size: 1.4rem; }
 .icon-green { background: var(--pale-green); color: var(--forest); }.icon-orange { background: #fff0de; color: #945311; }.icon-sage { background: #edf1df; color: var(--forest); }
 .benefit-card h3 { margin: 20px 0 9px; }.benefit-card p { min-height: 50px; color: var(--muted); font-size: .91rem; }
+.examples-section { padding-block: 68px 8px; }
+.examples-section .section-heading { margin-bottom: 24px; }
+.example-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.example-card { overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--white); box-shadow: var(--shadow); }
+.example-video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #101512; object-fit: contain; }
+.example-card-copy { padding: 17px 20px 19px; }
+.example-card-copy .waste-label { margin-bottom: 5px; color: var(--muted); }
+.example-card-copy h3 { margin: 0; color: var(--forest); }
 .text-link { display: inline-flex; align-items: center; gap: 8px; font-size: .88rem; font-weight: 700; text-decoration: none; }.text-link:hover { text-decoration: underline; }
 .cta-section { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-block: 70px; padding: 38px 42px; border-radius: 26px; background: var(--forest); color: var(--white); }
 .cta-section .eyebrow, .cta-section h2 { color: var(--white); }.cta-section h2 { max-width: 640px; margin-bottom: 12px; }.cta-section h2 span { color: #9fe0a6; }.cta-section p:last-child { max-width: 660px; margin-bottom: 0; color: #deebe0; font-size: .94rem; }
@@ -149,6 +157,7 @@ fieldset { min-width: 0; margin: 0 0 24px; padding: 0; border: 0; }fieldset lege
   .header-inner { min-height: 72px; }.desktop-nav { gap: 13px; }.desktop-nav a { font-size: .8rem; }.desktop-nav .nav-cta { padding: 9px 13px; }
   .hero { gap: 28px; min-height: 0; padding-block: 52px 58px; }.hero-art { min-height: 330px; }.bag { width: 120px; height: 155px; }.art-caption { right: 2%; }
   .benefit-card { padding: 20px; }.step-card { grid-template-columns: 38px 100px minmax(0, 1fr); gap: 18px; }.step-illustration { width: 92px; height: 92px; }
+  .example-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-top { grid-template-columns: 1fr 1fr; }.footer-top nav { grid-column: 1 / -1; justify-content: flex-start; }
 }
 @media (max-width: 640px) {
@@ -156,6 +165,7 @@ fieldset { min-width: 0; margin: 0 0 24px; padding: 0; border: 0; }fieldset lege
   .header-inner { min-height: 70px; }.desktop-nav { display: none; }.mobile-nav { display: block; }.brand-mark { width: 38px; height: 38px; }.brand-copy strong { font-size: .94rem; }
   .hero { grid-template-columns: 1fr; gap: 32px; padding-block: 45px 55px; }.hero h1 { font-size: clamp(2.45rem, 12vw, 3.7rem); }.hero-text { font-size: 1rem; }.hero-art { width: 100%; min-height: 330px; border-radius: 34% 34% 28% 28% / 28% 28% 36% 36%; }.bag { bottom: 15%; width: 117px; height: 151px; }.bag-organic { left: 20%; }.bag-recycle { right: 18%; }.art-caption { right: 1%; bottom: 5%; }
   .benefits-section { padding-block: 56px 60px; }.section-heading { margin-bottom: 27px; text-align: left; }.benefit-grid { grid-template-columns: 1fr; }.benefit-card { min-height: 0; }.benefit-card p { min-height: 0; margin-bottom: 16px; }
+  .examples-section { padding-block: 50px 0; }.example-grid { grid-template-columns: 1fr; gap: 14px; }.example-card-copy { padding: 14px 17px 17px; }
   .cta-section { align-items: flex-start; flex-direction: column; margin-block: 46px; padding: 27px 23px; }.cta-section .button { width: 100%; }
   .page-hero { padding-block: 51px 28px; }.page-hero h1 { font-size: clamp(2.45rem, 11vw, 3.5rem); }.page-intro { font-size: 1rem; }.steps-section, .waste-section { padding-top: 18px; }.steps-list { gap: 12px; }.step-card { grid-template-columns: 34px 1fr; gap: 13px; padding: 20px; }.step-number { grid-row: 1 / span 2; }.step-illustration { grid-column: 2; grid-row: 1; width: 66px; height: 66px; border-radius: 19px; font-size: 2.2rem; }.step-card > div:last-child { grid-column: 2; }.step-card h2 { font-size: 1.3rem; }
   .notice-band { align-items: flex-start; margin-bottom: 45px; padding: 16px; }.waste-grid { grid-template-columns: 1fr; }.waste-card { grid-template-columns: 48px minmax(0, 1fr); gap: 13px; padding: 19px; }.waste-symbol { width: 46px; height: 46px; }.bottom-cta { align-items: flex-start; flex-direction: column; margin-bottom: 48px; padding: 23px; }.bottom-cta .button { width: 100%; }

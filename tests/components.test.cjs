@@ -108,6 +108,21 @@ test("as cinco páginas oferecem o controle de tema e carregam o script comparti
   }
 });
 
+test("a página inicial exibe os três vídeos na ordem enviada antes da chamada final", () => {
+  const html = fs.readFileSync(path.join(project, "index.html"), "utf8");
+  const section = html.match(/<section class="[^"]*examples-section[^"]*"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(section, "seção de exemplos deve existir");
+  const sources = [...section.matchAll(/<source src="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(sources, [
+    "videos/Reciclagem_Garrafa.mp4",
+    "videos/Reciclagem_Vidro.mp4",
+    "videos/Rejeitos_Fralda.mp4",
+  ]);
+  assert.equal((section.match(/<video\b/g) || []).length, 3);
+  assert.equal((section.match(/\bcontrols\b/g) || []).length, 3);
+  assert.ok(html.indexOf(section) < html.indexOf('<section class="cta-section container">'), "os vídeos devem vir antes da seção final");
+});
+
 class FakeElement extends FakeEventTarget {
   constructor({ id = "", value = "", required = false, type = "text", options = [] } = {}) {
     super();
