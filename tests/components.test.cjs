@@ -126,6 +126,16 @@ test("a página inicial exibe os três vídeos na ordem enviada antes da chamada
   assert.match(css, /\.example-video\s*\{[^}]*width:\s*min\(100%,\s*250px\)/, "vídeo vertical deve ter largura limitada para caber nos três cards");
 });
 
+test("as cinco páginas têm botões acessíveis para as páginas iniciais das redes sociais", () => {
+  const expectedUrls = ["https://www.instagram.com/", "https://www.facebook.com/", "https://www.whatsapp.com/"];
+  for (const page of ["index.html", "como-funciona.html", "residuos.html", "acesso.html", "painel.html"]) {
+    const html = fs.readFileSync(path.join(project, page), "utf8");
+    const links = [...html.matchAll(/<a\b(?=[^>]*class="social-link")(?=[^>]*href="([^"]+)")(?=[^>]*aria-label="([^"]+)")(?=[^>]*target="_blank")(?=[^>]*rel="noopener noreferrer")[^>]*>/g)];
+    assert.deepEqual(links.map((match) => match[1]), expectedUrls, `${page} deve usar somente as páginas iniciais das redes`);
+    assert.equal(links.length, 3, `${page} deve ter os três botões acessíveis`);
+  }
+});
+
 class FakeElement extends FakeEventTarget {
   constructor({ id = "", value = "", required = false, type = "text", options = [] } = {}) {
     super();
