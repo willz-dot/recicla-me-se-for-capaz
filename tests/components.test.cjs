@@ -133,7 +133,10 @@ test("as cinco páginas têm botões acessíveis para as páginas iniciais das r
     const links = [...html.matchAll(/<a\b(?=[^>]*class="social-link")(?=[^>]*href="([^"]+)")(?=[^>]*aria-label="([^"]+)")(?=[^>]*target="_blank")(?=[^>]*rel="noopener noreferrer")[^>]*>/g)];
     assert.deepEqual(links.map((match) => match[1]), expectedUrls, `${page} deve usar somente as páginas iniciais das redes`);
     assert.equal(links.length, 3, `${page} deve ter os três botões acessíveis`);
+    assert.equal((html.match(/<svg width="18" height="18" viewBox="0 0 24 24"/g) || []).length, 3, `${page} deve limitar o tamanho dos ícones no próprio SVG`);
   }
+  const css = fs.readFileSync(path.join(project, "css", "style.css"), "utf8");
+  assert.match(css, /\.social-link\s*\{[^}]*width:\s*34px;\s*height:\s*34px;/);
 });
 
 class FakeElement extends FakeEventTarget {
